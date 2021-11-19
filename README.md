@@ -1,6 +1,7 @@
 # ns-lookup
 
-Find NS records in the DNS Heierarchy.
+Find NS records in the DNS Hierarchy by discovering and directly querying SOA
+records.
 
 This library will take a given domain and walk through each of the subdomains
 finding `SOA` records ("authorities") then check each authority for the

@@ -1,7 +1,7 @@
 {
   "name": "ns-lookup",
   "version": "1.0.0-0",
-  "description": "Nameserver lookups",
+  "description": "Find NS records in the DNS Hierarchy by discovering and directly querying SOA records.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "git@github.com:scaffoldly/ns-lookup.git",
