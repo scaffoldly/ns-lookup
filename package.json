@@ -1,0 +1,54 @@
+{
+  "name": "ns-lookup",
+  "version": "1.0.0-0",
+  "description": "Nameserver lookups",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:scaffoldly/ns-lookup.git",
+  "author": "Scaffoldly",
+  "bugs": {
+    "url": "https://github.com/scaffoldly/ns-lookup/issues"
+  },
+  "homepage": "https://github.com/scaffoldly/ns-lookup#readme",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "prepare": "yarn build",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix && yarn run prettier --write 'src/**/*.{js,ts,tsx}'"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "dns",
+    "nslookup",
+    "ns",
+    "lookup",
+    "scaffoldly",
+    "typescript"
+  ],
+  "dependencies": {
+    "dgram": "^1.0.1",
+    "dgram-as-promised": "^5.0.1",
+    "dns-packet": "^5.3.0",
+    "loglevel": "^1.8.0",
+    "promise-socket": "^7.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.0",
+    "@types/dns-packet": "^5.2.2",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "18.2.1",
+    "eslint-config-airbnb-typescript": "14.0.2",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4"
+  }
+}

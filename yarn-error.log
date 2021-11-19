@@ -1,0 +1,59 @@
+Arguments: 
+  /Users/christian/node-14.18.1/bin/node /usr/local/Cellar/yarn/1.22.11/libexec/bin/yarn.js
+
+PATH: 
+  /Users/christian/node-14.18.1/bin:/Users/christian/bin/gam:/usr/local/gcc-arm-none-eabi/bin:/usr/local/opt/python@3.7/bin:/usr/local/share/android-sdk/tools/bin:/usr/local/share/android-sdk/tools:/usr/local/opt/gradle/bin:/usr/local/opt/maven/bin:/usr/local/opt/ant/bin:/usr/local/opt/mysql@5.7/bin:/Users/christian/Library/Python/3.7/bin:/usr/local/opt/python@3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/MacGPG2/bin:/Library/Apple/usr/bin:/Applications/Wireshark.app/Contents/MacOS:/Users/christian/.cargo/bin
+
+Yarn version: 
+  1.22.11
+
+Node version: 
+  14.18.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/christian/scaffoldly/ns-lookup/package.json: Unexpected string in JSON at position 410
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.22.11/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.22.11/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.22.11/libexec/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "ns-lookup",
+    "version": "1.0.0",
+    "description": "Nameserver lookups",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "repository": "git@github.com:scaffoldly/ns-lookup.git",
+    "author": "Scaffoldly",
+    "bugs": {
+      "url": "https://github.com/scaffoldly/ns-lookup/issues"
+    },
+    "homepage": "https://github.com/scaffoldly/ns-lookup#readme",
+    "license": "MIT",
+    "private": false
+    "scripts": {
+      "build": "tsc",
+      "prepare": "yarn build"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "keywords": [
+      "dns",
+      "nslookup",
+      "ns",
+      "scaffoldly",
+      "typescript"
+    ]
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
