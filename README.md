@@ -26,19 +26,19 @@ For example, a domain of `foo.bar.baz.scaffold.ly` will do the following:
 yarn:
 
 ```sh
-yarn add ns-lookup
+yarn add soans
 ```
 
 npm:
 
 ```sh
-npm install --save ns-lookup
+npm install --save soans
 ```
 
 ## Usage
 
 ```typescript
-import { NsLookup } from 'ns-lookup';
+import { NsLookup } from 'soans';
 
 (await NsLookup('facebook.com')).addresses;
 // ["a.ns.facebook.com","b.ns.facebook.com","d.ns.facebook.com","c.ns.facebook.com"]
