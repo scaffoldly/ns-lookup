@@ -36,13 +36,13 @@ export type Authorities = {
 };
 
 export class NoAuthoritiesError extends Error {
-  constructor(public readonly domain: string) {
+  constructor(domain: string) {
     super(`No authorities found for ${domain}`);
   }
 }
 
 export class NoNameserversError extends Error {
-  constructor(public readonly domain: string, public readonly authorities: Authorities) {
+  constructor(domain: string, authorities: Authorities) {
     super(`No nameservers found for ${domain} from authorities ${authorities}`);
   }
 }
