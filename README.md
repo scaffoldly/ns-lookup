@@ -1,4 +1,4 @@
-# soa-ns-lookup
+# soans (SOA-based NS Lookup)
 
 Find NS records in the DNS Hierarchy by discovering and directly querying SOA
 records.
