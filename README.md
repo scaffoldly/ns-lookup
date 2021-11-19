@@ -1,11 +1,25 @@
-# ns-lookup
+# soa-ns-lookup
 
 Find NS records in the DNS Hierarchy by discovering and directly querying SOA
 records.
 
+**Note**: This library uses direct UDP/TCP communications to the Authorities so DNS
+caching is avoided and results are provided nearly immediately after records
+are added.
+
 This library will take a given domain and walk through each of the subdomains
 finding `SOA` records ("authorities") then check each authority for the
 existence of an `NS` record.
+
+For example, a domain of `foo.bar.baz.scaffold.ly` will do the following:
+
+- Find `SOA` (if any) on:
+  - `bar.baz.scaffold.ly`
+  - `baz.scaffold.ly`
+  - `scaffold.ly`
+  - `ly` (TLDs fetch `NS` records)
+- Then for each valid `SOA`, find the first with `NS` records.
+  - In the event the `SOA` record reports NS records (e.g. records have been added but the zone doesn't exist yet) return those NS records
 
 ## Installation
 
@@ -64,3 +78,7 @@ Create an issue in GitHub issues for this repostiory.
 ## Sponsored By
 
 [Scaffoldly](https://scaffold.ly)
+
+## License
+
+MIT

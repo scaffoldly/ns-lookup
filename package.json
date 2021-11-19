@@ -1,5 +1,5 @@
 {
-  "name": "ns-lookup",
+  "name": "soa-ns-lookup",
   "version": "1.0.0-2",
   "description": "Find NS records in the DNS Hierarchy by discovering and directly querying SOA records.",
   "main": "dist/index.js",
