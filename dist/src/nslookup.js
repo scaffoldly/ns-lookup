@@ -158,7 +158,7 @@ const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = exports.DEF
         return authorities;
     }
     if (parts.length === 1) {
-        loglevel_1.default.debug(`Looking up NS records for TLD .${lookup}`);
+        loglevel_1.default.debug(`Looking up NS records for TLD ${lookup}`);
         // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
         const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
         return {
