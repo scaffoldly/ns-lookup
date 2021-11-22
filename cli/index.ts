@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { NsLookup } from '../src';
 
 function usage() {
