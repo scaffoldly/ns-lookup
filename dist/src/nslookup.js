@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NsLookup = exports.NoNameserversError = exports.NoAuthoritiesError = void 0;
+exports.NsLookup = exports.DEFAULT_DNS = exports.NoNameserversError = exports.NoAuthoritiesError = void 0;
 const dns_packet_1 = __importStar(require("dns-packet"));
 const dgram_as_promised_1 = __importDefault(require("dgram-as-promised"));
 const net_1 = __importDefault(require("net"));
@@ -40,7 +40,7 @@ class NoNameserversError extends Error {
     }
 }
 exports.NoNameserversError = NoNameserversError;
-const DEFAULT_DNS = 'one.one.one.one';
+exports.DEFAULT_DNS = 'one.one.one.one';
 const sendAndReceive = async (host, port, buf, proto) => {
     loglevel_1.default.trace(`Performing ${proto} request to ${host}:${port}`);
     if (proto === 'tcp') {
@@ -86,7 +86,7 @@ const sendAndReceive = async (host, port, buf, proto) => {
         }
     }
 };
-const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', defaultDns = DEFAULT_DNS) => {
+const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', defaultDns = exports.DEFAULT_DNS) => {
     loglevel_1.default.trace(`NS-record lookup via ${type} for domain ${domain} using authorities`, authorities);
     if (authorities && authorities.addresses.length === 0) {
         loglevel_1.default.debug(`No authorities left to try`);
@@ -118,7 +118,7 @@ const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', default
         const received = await sendAndReceive(authority, 53, buf, proto);
         if (!received) {
             loglevel_1.default.warn(`No data received from ${authority} for ${type} record on ${domain}`);
-            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto, defaultDns);
         }
         const packet = dns_packet_1.default.decode(received);
         loglevel_1.default.debug(`Decoded packet from ${authority}:`, JSON.stringify(packet));
@@ -127,16 +127,16 @@ const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', default
             : packet.answers || [];
         if (!responses.length) {
             loglevel_1.default.warn(`No ${includeAuthorities ? 'authorities or answers' : 'answers'} in response`);
-            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto, defaultDns);
         }
         const answers = new Set(responses.filter((a) => a.type === 'NS' && (a.name === domain || a.name === `${domain}.`)));
         if (!answers.size) {
             loglevel_1.default.warn(`No NS records on ${domain} from ${authority} using ${type} query`);
             if (type === 'NS') {
                 loglevel_1.default.debug(`Checking SOA record of ${domain} for NS records`);
-                return await lookupNs(domain, authorities, 'SOA', proto);
+                return await lookupNs(domain, authorities, 'SOA', proto, defaultDns);
             }
-            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto, defaultDns);
         }
         const addresses = [...answers].map((answer) => answer.data);
         return { addresses, authority };
@@ -144,14 +144,14 @@ const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', default
     catch (e) {
         if (e instanceof Error) {
             loglevel_1.default.warn(`Error looking up NS of ${domain} from ${authority}`, e.message);
-            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+            return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto, defaultDns);
         }
         else {
             throw e;
         }
     }
 };
-const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = DEFAULT_DNS, authorities = { addresses: [] }) => {
+const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = exports.DEFAULT_DNS, authorities = { addresses: [] }) => {
     loglevel_1.default.trace(`SOA-record lookup for domain ${lookup} using ${defaultDns}`);
     const parts = lookup.split('.').slice(1);
     if (parts.length === 0) {
@@ -160,7 +160,7 @@ const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = DEFAULT_DNS
     if (parts.length === 1) {
         loglevel_1.default.debug(`Looking up NS records for TLD .${lookup}`);
         // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
-        const nameservers = await lookupNs(lookup);
+        const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
         return {
             addresses: [...authorities.addresses, ...nameservers.addresses],
         };
@@ -216,13 +216,13 @@ const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = DEFAULT_DNS
  * @param options An optional map of options
  * @returns An object containing the list of NS addresses for a given domain at it's authority
  */
-const NsLookup = async (domain, options = { defaultDns: DEFAULT_DNS, proto: 'udp' }) => {
+const NsLookup = async (domain, options = { defaultDns: exports.DEFAULT_DNS, proto: 'udp' }) => {
     const authorities = await lookupAuthorities(domain, options.proto, options.defaultDns);
     loglevel_1.default.info(`Authorities for ${domain}`, authorities.addresses);
     if (!authorities.addresses.length) {
         throw new NoAuthoritiesError(domain);
     }
-    const nameservers = await lookupNs(domain, authorities);
+    const nameservers = await lookupNs(domain, authorities, 'NS', options.proto, options.defaultDns);
     loglevel_1.default.info(`Nameserver records for ${domain}`, nameservers.addresses);
     if (!nameservers.addresses.length) {
         throw new NoNameserversError(domain, authorities);
