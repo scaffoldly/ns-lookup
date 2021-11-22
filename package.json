@@ -18,7 +18,7 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix && yarn run prettier --write 'src/**/*.{js,ts,tsx}'"
   },
   "bin": {
-    "soans": "dist/cli/index.ts"
+    "soans": "dist/cli/index.js"
   },
   "files": [
     "dist/**/*"
