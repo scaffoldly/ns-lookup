@@ -28,6 +28,7 @@ export declare class NoAuthoritiesError extends Error {
 export declare class NoNameserversError extends Error {
     constructor(domain: string, authorities: Authorities);
 }
+export declare const DEFAULT_DNS = "one.one.one.one";
 /**
  * Perform an nslookup for a given domain
  * @param domain The domain for which to lookup NS records

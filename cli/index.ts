@@ -17,7 +17,7 @@ function usage() {
     const debug = process.argv.find((arg) => arg === '--debug');
 
     const domain = process.argv.slice(-1)[0];
-    if (!domain) {
+    if (!domain || domain.startsWith('@') || domain.startsWith('--')) {
       usage();
       return;
     }
