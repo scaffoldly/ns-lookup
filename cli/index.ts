@@ -1,25 +1,51 @@
 #!/usr/bin/env node
 
-import { NsLookup } from '../src';
+import { NsLookup, DEFAULT_DNS } from '../src';
+import log from 'loglevel';
 
 function usage() {
   // eslint-disable-next-line no-console
-  console.error('Usage: soans [domain]');
+  console.error('Usage: soans [@1.1.1.1] [--verbose] [--debug] [--tcp] domain');
   process.exit(-1);
 }
 
 (async () => {
   try {
-    const domain = process.argv.slice(2)[0];
+    const defaultDns = process.argv.find((arg) => arg.startsWith('@')) || `@${DEFAULT_DNS}`;
+    const proto = process.argv.find((arg) => arg === '--tcp' || arg === '--udp') || '--udp';
+    const verbose = process.argv.find((arg) => arg === '--verbose');
+    const debug = process.argv.find((arg) => arg === '--debug');
+
+    const domain = process.argv.slice(-1)[0];
     if (!domain) {
       usage();
       return;
     }
-    const nameservers = await NsLookup(domain);
-    nameservers.addresses.forEach((address) => {
-      // eslint-disable-next-line no-console
-      console.log(address);
+
+    if (debug) {
+      log.setLevel('DEBUG');
+    }
+
+    const nameservers = await NsLookup(domain, {
+      defaultDns: defaultDns.replace('@', ''),
+      proto: proto === '--tcp' ? 'tcp' : 'udp',
     });
+
+    if (!verbose) {
+      nameservers.addresses.forEach((address) => {
+        // eslint-disable-next-line no-console
+        console.log(address);
+      });
+    } else {
+      // eslint-disable-next-line no-console
+      console.log(`Authority:\n\t${nameservers.authority}`);
+      // eslint-disable-next-line no-console
+      console.log(`Nameservers:`);
+      nameservers.addresses.forEach((address) => {
+        // eslint-disable-next-line no-console
+        console.log(`\t${address}`);
+      });
+    }
   } catch (e) {
     if (e instanceof Error) {
       // eslint-disable-next-line no-console

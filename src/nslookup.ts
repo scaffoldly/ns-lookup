@@ -51,7 +51,7 @@ export class NoNameserversError extends Error {
   }
 }
 
-const DEFAULT_DNS = 'one.one.one.one';
+export const DEFAULT_DNS = 'one.one.one.one';
 
 const sendAndReceive = async (
   host: string,
@@ -145,7 +145,13 @@ const lookupNs = async (
 
     if (!received) {
       log.warn(`No data received from ${authority} for ${type} record on ${domain}`);
-      return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+      return await lookupNs(
+        domain,
+        { addresses: authorities.addresses.slice(1) },
+        'NS',
+        proto,
+        defaultDns,
+      );
     }
 
     const packet = dnsPacket.decode(received);
@@ -157,7 +163,13 @@ const lookupNs = async (
 
     if (!responses.length) {
       log.warn(`No ${includeAuthorities ? 'authorities or answers' : 'answers'} in response`);
-      return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+      return await lookupNs(
+        domain,
+        { addresses: authorities.addresses.slice(1) },
+        'NS',
+        proto,
+        defaultDns,
+      );
     }
 
     const answers = new Set(
@@ -167,9 +179,15 @@ const lookupNs = async (
       log.warn(`No NS records on ${domain} from ${authority} using ${type} query`);
       if (type === 'NS') {
         log.debug(`Checking SOA record of ${domain} for NS records`);
-        return await lookupNs(domain, authorities, 'SOA', proto);
+        return await lookupNs(domain, authorities, 'SOA', proto, defaultDns);
       }
-      return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+      return await lookupNs(
+        domain,
+        { addresses: authorities.addresses.slice(1) },
+        'NS',
+        proto,
+        defaultDns,
+      );
     }
 
     const addresses = [...answers].map((answer) => (answer as StringAnswer).data);
@@ -177,7 +195,13 @@ const lookupNs = async (
   } catch (e) {
     if (e instanceof Error) {
       log.warn(`Error looking up NS of ${domain} from ${authority}`, e.message);
-      return await lookupNs(domain, { addresses: authorities.addresses.slice(1) }, 'NS', proto);
+      return await lookupNs(
+        domain,
+        { addresses: authorities.addresses.slice(1) },
+        'NS',
+        proto,
+        defaultDns,
+      );
     } else {
       throw e;
     }
@@ -201,7 +225,7 @@ const lookupAuthorities = async (
   if (parts.length === 1) {
     log.debug(`Looking up NS records for TLD .${lookup}`);
     // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
-    const nameservers = await lookupNs(lookup);
+    const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
     return {
       addresses: [...authorities.addresses, ...nameservers.addresses],
     };
@@ -271,7 +295,7 @@ export const NsLookup = async (
   if (!authorities.addresses.length) {
     throw new NoAuthoritiesError(domain);
   }
-  const nameservers = await lookupNs(domain, authorities);
+  const nameservers = await lookupNs(domain, authorities, 'NS', options.proto, options.defaultDns);
   log.info(`Nameserver records for ${domain}`, nameservers.addresses);
   if (!nameservers.addresses.length) {
     throw new NoNameserversError(domain, authorities);
