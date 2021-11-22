@@ -1,6 +1,6 @@
 {
   "name": "soans",
-  "version": "1.0.4",
+  "version": "1.0.5-0",
   "description": "Find NS records in the DNS Hierarchy by discovering and directly querying SOA records.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
