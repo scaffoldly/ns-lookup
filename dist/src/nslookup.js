@@ -36,7 +36,7 @@ class NoAuthoritiesError extends Error {
 exports.NoAuthoritiesError = NoAuthoritiesError;
 class NoNameserversError extends Error {
     constructor(domain, authorities) {
-        super(`No nameservers found for ${domain} from authorities ${JSON.stringify(authorities)}`);
+        super(`No nameservers found for ${domain} from authorities ${JSON.stringify(authorities.addresses)}`);
     }
 }
 exports.NoNameserversError = NoNameserversError;
