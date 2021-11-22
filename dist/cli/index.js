@@ -18,7 +18,7 @@ function usage() {
         const verbose = process.argv.find((arg) => arg === '--verbose');
         const debug = process.argv.find((arg) => arg === '--debug');
         const domain = process.argv.slice(-1)[0];
-        if (!domain || domain.startsWith('@') || domain.startsWith('--')) {
+        if (process.argv.length <= 2 || !domain || domain.startsWith('@') || domain.startsWith('--')) {
             usage();
             return;
         }
