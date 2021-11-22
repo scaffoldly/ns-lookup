@@ -21,6 +21,16 @@ For example, a domain of `foo.bar.baz.scaffold.ly` will do the following:
 - Then for each valid `SOA`, find the first with `NS` records.
   - In the event the `SOA` record reports NS records (e.g. records have been added but the zone doesn't exist yet) return those NS records
 
+## CLI
+
+```sh
+$ npx soans scaffold.ly
+ns-1014.awsdns-62.net
+ns-1219.awsdns-24.org
+ns-1914.awsdns-47.co.uk
+ns-234.awsdns-29.com
+```
+
 ## Installation
 
 yarn:
