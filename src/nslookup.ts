@@ -223,7 +223,7 @@ const lookupAuthorities = async (
   }
 
   if (parts.length === 1) {
-    log.debug(`Looking up NS records for TLD .${lookup}`);
+    log.debug(`Looking up NS records for TLD ${lookup}`);
     // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
     const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
     return {
