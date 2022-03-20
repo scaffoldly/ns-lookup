@@ -42,7 +42,7 @@ class NoNameserversError extends Error {
 exports.NoNameserversError = NoNameserversError;
 exports.DEFAULT_DNS = 'one.one.one.one';
 const sendAndReceive = async (host, port, buf, proto) => {
-    loglevel_1.default.trace(`Performing ${proto} request to ${host}:${port}`);
+    loglevel_1.default.debug(`Performing ${proto} request to ${host}:${port}`);
     if (proto === 'tcp') {
         try {
             const socket = new promise_socket_1.PromiseSocket(new net_1.default.Socket());
@@ -87,7 +87,7 @@ const sendAndReceive = async (host, port, buf, proto) => {
     }
 };
 const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', defaultDns = exports.DEFAULT_DNS) => {
-    loglevel_1.default.trace(`NS-record lookup via ${type} for domain ${domain} using authorities`, authorities);
+    loglevel_1.default.debug(`NS-record lookup via ${type} for domain ${domain} using authorities`, authorities);
     if (authorities && authorities.addresses.length === 0) {
         loglevel_1.default.debug(`No authorities left to try`);
         return { addresses: [], authority: null };
@@ -152,15 +152,15 @@ const lookupNs = async (domain, authorities, type = 'NS', proto = 'udp', default
     }
 };
 const lookupAuthorities = async (lookup, proto = 'udp', defaultDns = exports.DEFAULT_DNS, authorities = { addresses: [] }) => {
-    loglevel_1.default.trace(`SOA-record lookup for domain ${lookup} using ${defaultDns}`);
+    loglevel_1.default.debug(`SOA-record lookup for domain ${lookup} using ${defaultDns}`);
     const parts = lookup.split('.').slice(1);
     if (parts.length === 0) {
         return authorities;
     }
     if (parts.length === 1) {
-        loglevel_1.default.debug(`Looking up NS records for TLD ${lookup}`);
+        loglevel_1.default.debug(`Looking up NS records for TLD ${parts[0]}`);
         // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
-        const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
+        const nameservers = await lookupNs(parts[0], undefined, 'NS', proto, defaultDns);
         return {
             addresses: [...authorities.addresses, ...nameservers.addresses],
         };
