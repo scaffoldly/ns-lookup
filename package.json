@@ -15,6 +15,7 @@
   "scripts": {
     "build": "tsc",
     "prepare": "yarn build",
+    "start": "ts-node cli/index.ts",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix && yarn run prettier --write 'src/**/*.{js,ts,tsx}'"
   },
   "bin": {

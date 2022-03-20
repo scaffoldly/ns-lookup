@@ -59,7 +59,7 @@ const sendAndReceive = async (
   buf: Buffer,
   proto: 'tcp' | 'udp',
 ): Promise<Buffer | undefined> => {
-  log.trace(`Performing ${proto} request to ${host}:${port}`);
+  log.debug(`Performing ${proto} request to ${host}:${port}`);
   if (proto === 'tcp') {
     try {
       const socket = new PromiseSocket(new net.Socket());
@@ -108,7 +108,7 @@ const lookupNs = async (
   proto: Protocol = 'udp',
   defaultDns = DEFAULT_DNS,
 ): Promise<Nameservers> => {
-  log.trace(`NS-record lookup via ${type} for domain ${domain} using authorities`, authorities);
+  log.debug(`NS-record lookup via ${type} for domain ${domain} using authorities`, authorities);
 
   if (authorities && authorities.addresses.length === 0) {
     log.debug(`No authorities left to try`);
@@ -214,7 +214,7 @@ const lookupAuthorities = async (
   defaultDns = DEFAULT_DNS,
   authorities: Authorities = { addresses: [] },
 ): Promise<Authorities> => {
-  log.trace(`SOA-record lookup for domain ${lookup} using ${defaultDns}`);
+  log.debug(`SOA-record lookup for domain ${lookup} using ${defaultDns}`);
 
   const parts = lookup.split('.').slice(1);
 
@@ -223,9 +223,9 @@ const lookupAuthorities = async (
   }
 
   if (parts.length === 1) {
-    log.debug(`Looking up NS records for TLD ${lookup}`);
+    log.debug(`Looking up NS records for TLD ${parts[0]}`);
     // In the event of a TLD query (.dev, .com, .net), lookup NS for the authority
-    const nameservers = await lookupNs(lookup, undefined, 'NS', proto, defaultDns);
+    const nameservers = await lookupNs(parts[0], undefined, 'NS', proto, defaultDns);
     return {
       addresses: [...authorities.addresses, ...nameservers.addresses],
     };
